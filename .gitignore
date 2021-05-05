@@ -1,6 +1,6 @@
 #Large Files
-/data/*.xlsx
-/data/*.csv
+/data/interim_data/*.xlsx
+/data/interim_data/*.csv
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
