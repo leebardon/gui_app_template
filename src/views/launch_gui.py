@@ -11,7 +11,7 @@ def launch_gui():
     sg.theme("DarkTeal2")
     layout = [
         [sg.T("")],
-        [sg.Text("Qlikview Excel File: "), sg.Input(), sg.FileBrowse(key="-IN-")],
+        [sg.Text("Select Excel File: "), sg.Input(), sg.FileBrowse(key="-IN-")],
         [sg.Button("Select")],
         [sg.Button("Exit")],
     ]
@@ -24,6 +24,7 @@ def launch_gui():
             break
         elif event == "Select":
             datapath = values["-IN-"]
+            window.close()
             dc.get_and_convert_data(datapath)
 
 
