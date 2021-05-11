@@ -5,8 +5,8 @@ sys.path.insert(0, os.path.abspath(os.path.join(__file__, "..", "..", "..")))
 import PySimpleGUI as sg
 import time
 
-class Progressbar:
 
+class Progressbar:
     def __init__(self, i, j, message):
         self._task = i
         self._maxtasks = j
@@ -15,7 +15,11 @@ class Progressbar:
     def progress_gui(self):
         sg.theme("DarkTeal2")
         progressbar = [
-            [sg.ProgressBar(self._maxtasks, orientation="h", size=(51, 10), key="progressbar")]
+            [
+                sg.ProgressBar(
+                    self._maxtasks, orientation="h", size=(51, 10), key="progressbar"
+                )
+            ]
         ]
         outputwin = [[sg.Output(size=(50, 8))]]
         layout = [
@@ -33,7 +37,7 @@ class Progressbar:
     @property
     def update_progress(self, message):
         self._task += 1
-        self._message += "/n" + message 
+        self._message += "/n" + message
         self.progress_gui
 
 
