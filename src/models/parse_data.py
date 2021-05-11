@@ -8,6 +8,7 @@ global today, basepath
 today = str(date.today())
 basepath = Path.cwd()
 
+
 class StringConverter(dict):
     def __contains__(self, item):
         return True
@@ -24,6 +25,7 @@ def excel_to_csv(datapath):
     if not os.path.exists(csv):
         Xlsx2csv(datapath, outputencoding="utf-8").convert(csv)
     return csv
+
 
 def csv_to_df(csv_path):
     return pd.read_csv(csv_path, converters=StringConverter())
@@ -46,7 +48,9 @@ def convert_cols(cols_to_convert, course_data):
 
 
 def df_to_csv(processed_dataframe):
-    processed_dataframe.to_csv(f"{basepath}/data/processed_data/incomplete-courses-{today}.csv")
+    processed_dataframe.to_csv(
+        f"{basepath}/data/processed_data/incomplete-courses-{today}.csv"
+    )
 
 
 # if __name__ == "__main__":

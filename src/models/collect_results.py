@@ -9,7 +9,7 @@ basepath = Path.cwd()
 
 
 def not_completed(course_data):
-    return course_data[course_data["Completed"]=="N"]
+    return course_data[course_data["Completed"] == "N"]
 
 
 def get_departments(not_completed):
@@ -18,12 +18,11 @@ def get_departments(not_completed):
 
 def results_per_department(departments, not_completed):
     department_results = {}
-    for d in departments:    
+    for d in departments:
         department_results[d] = not_completed[not_completed["Department Name"] == d]
     return department_results
 
+
 def save_all_dept_results(department_results):
-    with open(
-        f"{basepath}/results/all_dept_incomplete_{today}.pkl", "wb"
-    ) as handle:
+    with open(f"{basepath}/results/all_dept_incomplete_{today}.pkl", "wb") as handle:
         pickle.dump(department_results, handle, protocol=pickle.HIGHEST_PROTOCOL)
