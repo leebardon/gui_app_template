@@ -49,7 +49,7 @@ def convert_cols(cols_to_convert, course_data):
 
 def df_to_csv(processed_dataframe):
     processed_dataframe.to_csv(
-        f"{basepath}/data/processed_data/incomplete-courses-{today}.csv"
+        f"{basepath}/data/processed_data/all/incomplete-courses-{today}.csv"
     )
 
 

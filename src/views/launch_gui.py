@@ -8,7 +8,7 @@ from src.controllers import data_controller as dc
 
 def launch_gui():
 
-    sg.theme("DarkTeal2")
+    sg.theme("Dark2")
     layout = [
         [sg.T("")],
         [sg.Text("Select Excel File: "), sg.Input(), sg.FileBrowse(key="-IN-")],

@@ -1,52 +1,51 @@
 import os, sys
 
 sys.path.insert(0, os.path.abspath(os.path.join(__file__, "..", "..", "..")))
-import PySimpleGUI as sg
-import time
+import time as t
 from src.models import parse_data
 from src.controllers import output_controller
-
-ts = time.sleep(2)
+from src.views import progress_gui as pg
 
 
 def get_and_convert_data(datapath):
-    sg.theme("DarkBlue")
-    sg.set_options(font=("Courier New", 12))
-    progressbar = [
-        [sg.ProgressBar(10, orientation="h", size=(51, 10), key="progressbar")]
-    ]
-    outputwin = [[sg.Output(size=(50, 4))]]
-    layout = [
-        [sg.Frame("Progress", layout=progressbar)],
-        [sg.Frame("Output", layout=outputwin, key="message")],
-    ]
-    window = sg.Window("Program Running...", layout).Finalize()
-    progress_bar = window["progressbar"]
+    tasks = 6
+    window, bar = pg.progress_gui(tasks, "Preparing Data...")
 
-    progress_bar.UpdateBar(3, 10)
-    window.FindElement("message").Update(" -- converting excel file to csv -- ")
+    pg.update(window, bar, 1, tasks, task_list(1))
     raw_csv = parse_data.excel_to_csv(datapath)
+    t.sleep(2)
 
-    progress_bar.UpdateBar(4, 10)
-    window.FindElement("message").Update(" -- building raw dataframe -- ")
+    pg.update(window, bar, 2, tasks, task_list(2))
     raw_dataframe = parse_data.csv_to_df(raw_csv)
-    ts
+    t.sleep(2)
 
-    progress_bar.UpdateBar(6, 10)
-    window.FindElement("message")(" -- cleaning data for analysis -- ")
+    pg.update(window, bar, 3, tasks, task_list(3))
     interim_dataframe = parse_data.remove_dash(raw_dataframe)
-    ts
+    t.sleep(2)
 
-    progress_bar.UpdateBar(8, 10)
-    window.FindElement("message").Update(" -- converting strings to DateTime objects -- ")
+    pg.update(window, bar, 4, tasks, task_list(4))
     processed_dataframe = parse_data.convert_datetime(interim_dataframe)
-    ts
+    t.sleep(2)
 
-    progress_bar.UpdateBar(10, 10)
-    window.FindElement("message").Update(" -- data processed -- ")
+    pg.update(window, bar, 5, tasks, task_list(5))
     parse_data.df_to_csv(processed_dataframe)
-    ts
-    window.close()
+    t.sleep(2)
+
+    pg.update(window, bar, 6, tasks, task_list(6))
+    output_controller.generate_results(processed_dataframe)
+
+
+def task_list(i):
+    task_list = [
+        " >> Converting excel file to csv...  ",
+        " >> Reading into dataframe...  ",
+        " >> Cleaning data for analysis...  ",
+        " >> Working...  ",
+        " >> Saving processed data to csv...  ",
+        " >> Preparing to generate results...  ",
+    ]
+    return task_list[i - 1]
+
     # bar = pb.Progressbar(1, 5, "converting excel to csv")
     # bar.progress_gui()
     # tasks = pbar.Tasks(1, 5, "starting")
@@ -74,14 +73,3 @@ def get_and_convert_data(datapath):
     # parse_data.df_to_csv(processed_dataframe)
 
     # output_controller.generate_results(processed_dataframe)
-
-
-# def task_list():
-#     task_list = [
-#         "Converting excel file to csv...",
-#         "Reading into dataframe...",
-#         "Replacing dashes with 'None'...",
-#         "Converting data strings to DateTime objects...",
-#         "Saving processed data to csv...",
-#     ]
-#     return task_list
