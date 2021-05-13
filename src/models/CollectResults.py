@@ -1,6 +1,7 @@
 import pandas as pd
 import pickle
 import os
+from styleframe import StyleFrame
 from pathlib import Path
 from datetime import date
 
@@ -14,11 +15,8 @@ def not_completed(course_data):
     return course_data[course_data["Completed"] == "N"]
 
 
-def get_facs_depts(not_completed):
-    return (
-        not_completed["Faculty Name"].unique(),
-        not_completed["Department Name"].unique(),
-    )
+def get_faculties_list(not_completed):
+    return not_completed["Faculty Name"].unique()
 
 
 def results_by_faculty(facs, not_completed):
@@ -51,18 +49,36 @@ def get_final_results(faculty, fac_df, deps_per_fac):
 
 
 def generate_outputs(faculty_name, results_dict):
-    folderpath = check_facultyfolder_exists(faculty_name)
+    fac_path = check_facultyfolder_exists(faculty_name)
+
     for department, dataframe in results_dict.items():
-        dataframe.to_excel(f"{folderpath}/{department}_{today}.xlsx")
+        dep_path = check_dir(f"{fac_path}/{department}")
+        filepath = f"{dep_path}/{today}.xlsx"
+        save_to_excel(dataframe, filepath)
 
 
 def check_facultyfolder_exists(faculty_name):
-    facultyfolder = f"{outdir}/H&S Incomplete Courses/{faculty_name}"
-    if not os.path.exists(facultyfolder):
-        os.mkdir(facultyfolder)
-    return facultyfolder
+    parent = check_dir(f"{outdir}/H&S Incomplete Courses/")
+    fac_path = check_dir(f"{parent}/{faculty_name}")
+    return fac_path
 
 
-# def check_facultyfolder_exists(path):
-#     if not os.path.exists(path):
-#         os.mkdir(path)
+def check_dir(path):
+    if not os.path.exists(path):
+        os.mkdir(path)
+    return path
+
+
+def save_to_excel(df, filepath):
+    columns = df.columns.values.tolist()
+    excel_writer = StyleFrame.ExcelWriter(filepath)
+    sf = StyleFrame(df)
+    sf.set_column_width(columns, width=17)
+    sf.to_excel(excel_writer=excel_writer,)
+    excel_writer.save()
+
+
+# if __name__ == '__main__':
+#     basepath = Path.cwd()
+#     outdir = os.path.dirname(basepath)
+#     save_to_excel("", "")

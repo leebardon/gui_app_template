@@ -5,7 +5,7 @@
 /results/*.pkl
 /data/images/*.gif
 /data/processed_data/all/*.csv
-/data/processed_data/by_department/*.pkl
+/data/processed_data/by_faculty/*.pkl
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
