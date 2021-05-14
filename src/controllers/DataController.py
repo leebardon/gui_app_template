@@ -45,31 +45,3 @@ def task_list(i):
         " >> Preparing to generate results...  ",
     ]
     return task_list[i - 1]
-
-    # bar = pb.Progressbar(1, 5, "converting excel to csv")
-    # bar.progress_gui()
-    # tasks = pbar.Tasks(1, 5, "starting")
-    # pbar.launch_pb2(tasks := tasks)
-    # raw_csv = parse_data.excel_to_csv(datapath)
-
-    # bar = pb.Progressbar(2, 5)
-    # tasks.update(message="building raw dataframe")
-    # tasks.update(message="task2")
-    # tasks.update(message="task3")
-    # tasks.update(message="task4e")
-    # tasks.update(message="task5")
-    # raw_dataframe = parse_data.csv_to_df(raw_csv)
-
-    # bar = pb.Progressbar(3, 5)
-    # bar.update_progress("cleaning data for analysis")
-    # interim_dataframe = parse_data.remove_dash(raw_dataframe)
-
-    # bar = pb.Progressbar(4, 5)
-    # bar.update_progress("converting strings to DateTime objects")
-    # processed_dataframe = parse_data.convert_datetime(interim_dataframe)
-
-    # bar = pb.Progressbar(5, 5)
-    # bar.update_progress(" -- saving processed dataframe -- ")
-    # parse_data.df_to_csv(processed_dataframe)
-
-    # output_controller.generate_results(processed_dataframe)
