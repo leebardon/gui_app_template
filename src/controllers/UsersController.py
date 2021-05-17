@@ -7,8 +7,3 @@ from subprocess import run
 basepath = Path.cwd()
 
 run(["python", f"{basepath}/src/models/GetActiveUsers.py"])
-
-
-
-
-

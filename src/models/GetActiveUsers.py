@@ -1,4 +1,12 @@
-from ldap3 import Server, Connection, AUTO_BIND_NO_TLS, SUBTREE, ALL_ATTRIBUTES, ALL, DEREF_NEVER
+from ldap3 import (
+    Server,
+    Connection,
+    AUTO_BIND_NO_TLS,
+    SUBTREE,
+    ALL_ATTRIBUTES,
+    ALL,
+    DEREF_NEVER,
+)
 from pathlib import Path
 from datetime import date
 import sys, os
@@ -10,14 +18,20 @@ today = str(date.today())
 
 AD_SERVER = "ldaps://nlbldap.soton.ac.uk"
 AD_MEMBER_ATTRIBUTE = "member"
-AD_USERNAME_ATTRIBUTE = "sAMAccountName":quit
+AD_USERNAME_ATTRIBUTE = "sAMAccountName"
 
 # Settings to return all active users:
 OUTPUT_FILE = f"{outdir}/active.users.{today}.out"
 REALM_DN = "DC=soton,DC=ac,DC=uk"
-AD_GROUP_TEMPLATE = "(&(objectClass=user)(memberof=CN=%s, ou=user, dc=soton, dc=ac, dc=uk))"
-AD_GROUPS = ["allStaff_category", "allPGR_category", "allPGT_category", "allUG_category"]
-
+AD_GROUP_TEMPLATE = (
+    "(&(objectClass=user)(memberof=CN=%s, ou=user, dc=soton, dc=ac, dc=uk))"
+)
+AD_GROUPS = [
+    "allStaff_category",
+    "allPGR_category",
+    "allPGT_category",
+    "allUG_category",
+]
 
 
 def list_active_users(group):
@@ -30,12 +44,14 @@ def list_active_users(group):
     else:
         users = list()
         conn.search(REALM_DN, AD_GROUP_TEMPLATE % ad_group)
-        entries = conn.extend.standard.paged_search(REALM_DN, AD_GROUP_TEMPLATE % ad_group, attributes=['cn'], paged_size=10)
+        entries = conn.extend.standard.paged_search(
+            REALM_DN, AD_GROUP_TEMPLATE % ad_group, attributes=["cn"], paged_size=10
+        )
 
         try:
             for e in entries:
-                if e['type'] == 'searchResEntry':
-                    users.append(e['attributes']['cn'][0])
+                if e["type"] == "searchResEntry":
+                    users.append(e["attributes"]["cn"][0])
         except TypeError:
             if entries == None:
                 sys.stderr.write("Could not find AD group\n")
