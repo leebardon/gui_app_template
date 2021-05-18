@@ -1,42 +1,54 @@
-from ldap3 import (
-    Server,
-    Connection,
-    AUTO_BIND_NO_TLS,
-    SUBTREE,
-    ALL_ATTRIBUTES,
-    ALL,
-    DEREF_NEVER,
-)
+from ldap3 import Server, Connection, ALL
+
+# from src.models import Save
 from pathlib import Path
 from datetime import date
 import sys, os
 import json
 
-basepath = Path.cwd()
-outdir = os.path.dirname(basepath)
-today = str(date.today())
 
-AD_SERVER = "ldaps://nlbldap.soton.ac.uk"
-AD_MEMBER_ATTRIBUTE = "member"
-AD_USERNAME_ATTRIBUTE = "sAMAccountName"
+class Vars:
+    pass
+
+
+_v = Vars()
+_v.TODAY = str(date.today())
+_v.BASEPATH = Path.cwd()
+_v.OUTDIR = os.path.dirname(_v.BASEPATH)
+_v.PARENT = f"{_v.OUTDIR}/H&S Incomplete Courses/"
+
+
+class ServerSettings:
+    pass
+
+
+_s = ServerSettings()
+_s.AD_SERVER = "ldaps://nlbldap.soton.ac.uk"
+_s.MEMBER_ATTRIBUTE = "member"
+_s.USERNAME_ATTRIBUTE = "sAMAccountName"
+
 
 # Settings to return all active users:
-OUTPUT_FILE = f"{outdir}/active.users.{today}.out"
 REALM_DN = "DC=soton,DC=ac,DC=uk"
 AD_GROUP_TEMPLATE = (
     "(&(objectClass=user)(memberof=CN=%s, ou=user, dc=soton, dc=ac, dc=uk))"
 )
 AD_GROUPS = [
-    "allStaff_category",
-    "allPGR_category",
-    "allPGT_category",
-    "allUG_category",
+    "allStaff_Flat",
+    "allStudent_flat",
 ]
 
 
-def list_active_users(group):
+def get_users():
+    all_users = []
+    for ad_group in AD_GROUPS:
+        all_users.append(list_active_users(ad_group))
+    return all_users
+
+
+def list_active_users(ad_group):
     try:
-        server = Server(AD_SERVER, get_info=ALL)
+        server = Server(_s.AD_SERVER, get_info=ALL)
         conn = Connection(server, auto_bind=True)
     except Exception as ex:
         sys.stderr.write("Unable to connect to LDAP server: " + str(ex) + "\n")
@@ -63,19 +75,5 @@ def list_active_users(group):
     return users
 
 
-def generate_users_list(filename, users):
-
-    try:
-        with open(filename, "w") as fp:
-            for username in users:
-                fp.write(f"{username}\n")
-    except Exception as ex:
-        sys.stderr.write("Unable to write to output file: " + str(ex) + "\n")
-        sys.exit(2)
-
-
 if __name__ == "__main__":
-    users = set()
-    for ad_group in AD_GROUPS:
-        users = list_active_users(ad_group)
-    generate_users_list(OUTPUT_FILE, users)
+    get_users()

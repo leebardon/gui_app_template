@@ -4,9 +4,14 @@ from pathlib import Path
 from xlsx2csv import Xlsx2csv
 from datetime import date
 
-global today, basepath
-today = str(date.today())
-basepath = Path.cwd()
+
+class Vars:
+    pass
+
+
+_v = Vars()
+_v.TODAY = str(date.today())
+_v.BASEPATH = Path.cwd()
 
 
 class StringConverter(dict):
@@ -21,7 +26,7 @@ class StringConverter(dict):
 
 
 def excel_to_csv(datapath):
-    csv = f"{basepath}/data/interim_data/raw-incomplete-courses-{today}.csv"
+    csv = f"{_v.BASEPATH}/data/interim_data/raw-incomplete-courses-{_v.TODAY}.csv"
     if not os.path.exists(csv):
         Xlsx2csv(datapath, outputencoding="utf-8").convert(csv)
     return csv
@@ -49,12 +54,5 @@ def convert_cols(cols_to_convert, course_data):
 
 def df_to_csv(processed_dataframe):
     processed_dataframe.to_csv(
-        f"{basepath}/data/processed_data/all/incomplete-courses-{today}.csv"
+        f"{_v.BASEPATH}/data/processed_data/all/incomplete-courses-{_v.TODAY}.csv"
     )
-
-
-# if __name__ == "__main__":
-#     global today, basepath
-#     today = str(date.today())
-#     basepath = Path.cwd()
-#     print("model :", basepath)

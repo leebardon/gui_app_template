@@ -3,14 +3,14 @@ import time
 
 
 def progress_gui(num_tasks, windowtype):
-    sg.theme("Dark2")
+    sg.theme("BrightColors")
     sg.set_options(font=("Helvetica", 14))
     progressbar = [
         [sg.ProgressBar(num_tasks, orientation="h", size=(46, 10), key="progressbar")]
     ]
     outputwin = [[sg.Output(size=(44, 6))]]
     layout = [
-        [sg.Frame("Progress", layout=progressbar)],
+        [sg.Frame("  Progress  ", layout=progressbar)],
         [sg.Frame("Output", layout=outputwin, key="message")],
     ]
     window = sg.Window(windowtype, layout).Finalize()

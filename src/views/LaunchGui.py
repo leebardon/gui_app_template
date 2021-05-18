@@ -3,19 +3,19 @@ import os, sys
 sys.path.insert(0, os.path.abspath(os.path.join(__file__, "..", "..", "..")))
 
 import PySimpleGUI as sg
-from src.controllers import data_controller as dc
+from src.controllers import DataController as dc
 
 
 def launch_gui():
 
-    sg.theme("Dark2")
+    sg.theme("BrightColors")
     layout = [
         [sg.T("")],
         [sg.Text("Select Excel File: "), sg.Input(), sg.FileBrowse(key="-IN-")],
-        [sg.Button("Select")],
-        [sg.Button("Exit")],
+        [sg.T("")],
+        [sg.Button("Select"), sg.Button("Exit")],
     ]
-    window = sg.Window("H&S Courses - Incomplete", layout, size=(600, 150))
+    window = sg.Window("H&S Courses - Incomplete", layout, size=(500, 120))
 
     while True:
         event, values = window.read()

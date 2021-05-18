@@ -1,18 +1,35 @@
 import pandas as pd
 import pickle
 import os
+from glob import glob
 from styleframe import StyleFrame
 from pathlib import Path
 from datetime import date
+from src.models import Save
 
-global today, basepath
-today = str(date.today())
-basepath = Path.cwd()
-outdir = os.path.dirname(basepath)
+
+class Vars:
+    pass
+
+
+_v = Vars()
+_v.TODAY = str(date.today())
+_v.BASEPATH = Path.cwd()
+_v.OUTDIR = os.path.dirname(_v.BASEPATH)
+_v.LDAP = f"{_v.OUTDIR}/H&S Incomplete Courses/.ldap_users"
 
 
 def not_completed(course_data):
     return course_data[course_data["Completed"] == "N"]
+
+
+def get_ldap_users_list():
+    users = glob(os.path.join(f"{_v.LDAP}/", "*.out"))[0]
+    return pd.read_csv(users, names=["Username"])
+
+
+def remove_inactive(incomplete_all, active_users):
+    return incomplete_all[incomplete_all["Username"].isin(active_users["Username"])]
 
 
 def get_faculties_list(not_completed):
@@ -25,13 +42,6 @@ def results_by_faculty(facs, not_completed):
         _filter = not_completed["Faculty Name"] == f
         results[f] = not_completed[_filter]
     return results
-
-
-def save_faculties_dataframes(faculty_results):
-    with open(
-        f"{basepath}/data/processed_data/by_faculty/all_faculties_{today}.pkl", "wb"
-    ) as handle:
-        pickle.dump(faculty_results, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
 
 def results_by_department(results_by_faculty):
@@ -49,38 +59,9 @@ def get_final_results(faculty, fac_df, deps_per_fac):
 
 
 def generate_outputs(faculty_name, results_dict):
-    fac_path = check_facultyfolder_exists(faculty_name)
+    fac_path = Save.check_facultyfolder_exists(faculty_name)
 
     for department, dataframe in results_dict.items():
-        dep_path = check_dir(f"{fac_path}/{department}")
-        filepath = f"{dep_path}/{today}.xlsx"
-        save_to_excel(dataframe, filepath)
-
-
-def check_facultyfolder_exists(faculty_name):
-    parent = check_dir(f"{outdir}/H&S Incomplete Courses/")
-    fac_path = check_dir(f"{parent}/{faculty_name}")
-    return fac_path
-
-
-def check_dir(path):
-    if not os.path.exists(path):
-        os.mkdir(path)
-    return path
-
-
-def save_to_excel(df, filepath):
-    columns = df.columns.values.tolist()
-    excel_writer = StyleFrame.ExcelWriter(filepath)
-    sf = StyleFrame(df)
-    sf.set_column_width(columns, width=17)
-    sf.to_excel(excel_writer=excel_writer,)
-    excel_writer.save()
-
-
-# if __name__ == '__main__':
-#     basepath = Path.cwd()
-#     outdir = os.path.dirname(basepath)
-#     save_to_excel("", "")
-
-# %%
+        dep_path = Save.check_dir(f"{fac_path}/{department}")
+        filepath = f"{dep_path}/{_v.TODAY}.xlsx"
+        Save.save_to_excel(dataframe, filepath)
