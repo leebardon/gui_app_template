@@ -1,6 +1,6 @@
 import pandas as pd
 import pickle
-import sys, os
+import sys, os, shutil
 from styleframe import StyleFrame
 from pathlib import Path
 from datetime import date
@@ -49,7 +49,7 @@ def save_to_excel(df, filepath):
 def generate_users_list(users):
     parent = check_dir(_v.PARENT)
     outfolder = check_dir(f"{parent}/.ldap_users")
-    print(outfolder)
+    remove_old_list(outfolder)
     outfile = f"{outfolder}/active.users_{_v.TODAY}.out"
     try:
         with open(outfile, "w") as fp:
@@ -58,3 +58,16 @@ def generate_users_list(users):
     except Exception as ex:
         sys.stderr.write("Unable to write to output file: " + str(ex) + "\n")
         sys.exit(2)
+
+
+def remove_old_list(folder):
+    for file in os.listdir(folder):
+        if file.startswith("active.users"):
+            file_path = os.path.join(folder, file)
+        try:
+            if os.path.isfile(file_path):
+                os.remove(file_path)
+            elif os.path.isdir(file_path):
+                shutil.rmtree(file_path)
+        except Exception as e:
+            print(f"Failed to delete {file_path}. Reason:{e}")

@@ -3,6 +3,7 @@ from ldap3 import Server, Connection, ALL
 # from src.models import Save
 from pathlib import Path
 from datetime import date
+import numpy as np
 import sys, os
 import json
 
@@ -34,15 +35,17 @@ AD_GROUP_TEMPLATE = (
     "(&(objectClass=user)(memberof=CN=%s, ou=user, dc=soton, dc=ac, dc=uk))"
 )
 AD_GROUPS = [
-    "allStaff_Flat",
-    "allStudent_flat",
+    "allStaff_category",
+    "allPGT_category",
+    "allUG_category",
 ]
 
 
 def get_users():
-    all_users = []
+    users = []
     for ad_group in AD_GROUPS:
-        all_users.append(list_active_users(ad_group))
+        users.append(list_active_users(ad_group))
+    all_users = np.concatenate((users[0], users[1], users[2]))
     return all_users
 
 

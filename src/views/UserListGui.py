@@ -18,8 +18,7 @@ def get_users_thread(window):
 
 
 def running_thread(window):
-    print(" ---- Program Running ---- \n")
-    print("This process could take a while....")
+    print(" \n This process could take a while....")
     while True:
         window["bar"].Widget["value"] += 5
         time.sleep(0.3)
@@ -59,24 +58,20 @@ def user_list_gui():
             break
 
         elif event == "Update":
-            window["out"].update("")
             window["out"].update("  -------- Updating Active Users List ---------  \n")
             get_users(window)
             running(window)
+            print(" \n ---- DONE ---- ")
 
         elif event == "-THREAD DONE-":
-            print(" --------- User List Updated --------- \n")
-            time.sleep(2)
-            window["out"].update("")
-            print(" -------- Launching Main Application -------- ")
+            window["out"].update(" -------- Launching Main Application -------- ")
             time.sleep(1)
             window.close()
             run(["python", f"{basepath}/src/views/LaunchGui.py"])
 
         elif event == "Start":
-            window["out"].update("")
-            print(" ----------- Starting Main Program ----------- \n")
-            time.sleep(1.5)
+            window["out"].update(" ----------- Starting Main Program ----------- \n")
+            time.sleep(2)
             window.close()
             run(["python", f"{basepath}/src/views/LaunchGui.py"])
 
