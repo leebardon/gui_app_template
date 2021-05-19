@@ -7,7 +7,6 @@ import numpy as np
 
 
 def get_active_ldap_users():
-
     users = GetActiveUsers.get_users()
     Save.generate_users_list(users)
 

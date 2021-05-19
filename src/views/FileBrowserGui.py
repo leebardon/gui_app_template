@@ -4,6 +4,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(__file__, "..", "..", "..")))
 
 import PySimpleGUI as sg
 from src.controllers import DataController as dc
+from src.views import ProgressGui as pg
 
 
 def launch_gui():
@@ -11,11 +12,11 @@ def launch_gui():
     sg.theme("BrightColors")
     layout = [
         [sg.T("")],
-        [sg.Text("Select Excel File: "), sg.Input(), sg.FileBrowse(key="-IN-")],
+        [sg.Text("Qlikview Excel File: "), sg.Input(), sg.FileBrowse(key="-IN-")],
         [sg.T("")],
         [sg.Button("Select"), sg.Button("Exit")],
     ]
-    window = sg.Window("H&S Courses - Incomplete", layout, size=(500, 120))
+    window = sg.Window(" Qlikview Data ", layout, size=(500, 120))
 
     while True:
         event, values = window.read()

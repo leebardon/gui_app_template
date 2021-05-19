@@ -7,6 +7,7 @@ import time
 import PySimpleGUI as sg
 from pathlib import Path
 from subprocess import run
+from src.models import Gui as gui
 
 basepath = Path.cwd()
 
@@ -20,8 +21,8 @@ def get_users_thread(window):
 def running_thread(window):
     print(" \n This process could take a while....")
     while True:
-        window["bar"].Widget["value"] += 5
-        time.sleep(0.3)
+        window["bar"].Widget["value"] += 3
+        time.sleep(0.15)
 
 
 def get_users(window):
@@ -33,27 +34,16 @@ def running(window):
 
 
 def user_list_gui():
-    sg.theme("BrightColors")
-    sg.set_options(font=("Helvetica", 12))
-    progressbar = [
-        [sg.ProgressBar(max_value=100, orientation="h", size=(50, 10), key="bar")]
-    ]
-    outputwin = [[sg.Output(size=(48, 6), key="out")]]
-    layout = [
-        [sg.Frame(" Progress ", layout=progressbar)],
-        [sg.Frame(" Update Active Users  ", layout=outputwin)],
-        [sg.Button("Update"), sg.Button("Start")],
-    ]
 
-    window = sg.Window("Update Active User List", layout).Finalize()
-    window["bar"].Widget.config(mode="indeterminate")
+    window = gui.user_list_gui_settings(" H&S Course Completion Analyser ")
     window["out"].update(" ========= Welcome to Hassle Blaster ========= ")
     print(" \n")
-    print(">> 'UPDATE' refreshes active users' list \n ")
-    print(">> 'START' launches main program   ")
+    print(" >> 'UPDATE' refreshes active users' list \n ")
+    print(" >> 'START' launches main program   ")
 
     while True:
         event, values = window.read()
+
         if event == sg.WIN_CLOSED:
             break
 
@@ -70,10 +60,10 @@ def user_list_gui():
             run(["python", f"{basepath}/src/views/LaunchGui.py"])
 
         elif event == "Start":
-            window["out"].update(" ----------- Starting Main Program ----------- \n")
+            window["out"].update(" -------- Launching Main Application -------- ")
             time.sleep(2)
             window.close()
-            run(["python", f"{basepath}/src/views/LaunchGui.py"])
+            run(["python", f"{basepath}/src/views/FileBrowserGui.py"])
 
 
 if __name__ == "__main__":

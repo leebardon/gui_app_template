@@ -56,3 +56,9 @@ def df_to_csv(processed_dataframe):
     processed_dataframe.to_csv(
         f"{_v.BASEPATH}/data/processed_data/all/incomplete-courses-{_v.TODAY}.csv"
     )
+
+
+def return_dataframe():
+    return pd.read_csv(
+        f"{_v.BASEPATH}/data/processed_data/all/incomplete-courses-{_v.TODAY}.csv"
+    )

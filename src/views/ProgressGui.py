@@ -1,33 +1,61 @@
-import PySimpleGUI as sg
+import os, sys
+
+sys.path.insert(0, os.path.abspath(os.path.join(__file__, "..", "..", "..")))
+
+import threading
 import time
+import sys
+import PySimpleGUI as sg
+from pathlib import Path
+from subprocess import run
+from src.models import ParseData
+from src.models import Gui as gui
+
+basepath = Path.cwd()
 
 
-def progress_gui(num_tasks, windowtype):
-    sg.theme("BrightColors")
-    sg.set_options(font=("Helvetica", 14))
-    progressbar = [
-        [sg.ProgressBar(num_tasks, orientation="h", size=(46, 10), key="progressbar")]
-    ]
-    outputwin = [[sg.Output(size=(44, 6))]]
-    layout = [
-        [sg.Frame("  Progress  ", layout=progressbar)],
-        [sg.Frame("Output", layout=outputwin, key="message")],
-    ]
-    window = sg.Window(windowtype, layout).Finalize()
-    progress_bar = window["progressbar"]
+def progress_gui(data, task_type, window_message):
+    window = gui.progress_gui_settings(window_message)
 
-    return window, progress_bar
+    if task_type == "analysis":
+        print("\n >> Click 'START' to analyse data  ")
+        analysis_event_loop(window, data)
+
+    elif task_type == "results":
+        print("\n >> Click 'START' to generate results  ")
+        results_event_loop(window, data)
 
 
-def update(window, progress_bar, current, total, message):
-    if current == 1:
-        print(f" ------- Total Number of Tasks = {total} -------")
+def analysis_event_loop(window, datapath):
+    while True:
+        event, values = window.read()
 
-    progress_bar.UpdateBar(current, total)
-    window.FindElement("message").Update(message)
-    print(f"Processing task number {current}")
-    time.sleep(2)
+        if event == sg.WIN_CLOSED:
+            window.close()
+            sys.exit(0)
+            break
+        elif event == "Start":
+            gui.analysis_tasks(window, datapath)
+            gui.run_progressbar(window)
+        elif event == "-THREAD DONE-":
+            window["out"].update(" ------------- Analysis Complete ------------- ")
+            time.sleep(2)
+            print(" \n\n >> Generating Results ..... ")
+            time.sleep(2)
+            window.close()
+            run(["python", f"{basepath}/src/controllers/ResultsController.py"])
 
-    if current == total:
-        time.sleep(2)
-        window.close()
+
+def results_event_loop(window, course_data):
+    while True:
+        event, values = window.read()
+
+        if event == sg.WIN_CLOSED:
+            break
+        elif event == "Start":
+            gui.results_tasks(window, course_data)
+            gui.run_progressbar(window)
+        elif event == "-THREAD DONE-":
+            window["out"].update(" ------------- Program Finished ------------- ")
+            time.sleep(1)
+            window.close()
