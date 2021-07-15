@@ -130,7 +130,7 @@ def messages(i):
         "\n >> Converting excel file to csv...  ",
         "\n >> Reading into dataframe...  ",
         "\n >> Cleaning data for analysis...  ",
-        # "\n >> Converting strings to datetimes...   ",
+        "\n >> Converting strings to datetimes...   ",
         "\n >> Saving processed data to csv...  ",
         "\n >> Preparing to generate results...  ",
         "\n >> Gathering non-completed course data...  ",
