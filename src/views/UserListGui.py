@@ -34,7 +34,6 @@ def running(window):
 
 
 def user_list_gui():
-
     window = gui.user_list_gui_settings(" H&S Course Completion Analyser ")
     window["out"].update(" ========= Welcome to Hassle Blaster ========= ")
     print(" \n")
@@ -45,6 +44,7 @@ def user_list_gui():
         event, values = window.read()
 
         if event == sg.WIN_CLOSED:
+            window.close()
             break
 
         elif event == "Update":
@@ -54,14 +54,13 @@ def user_list_gui():
             print(" \n ---- DONE ---- ")
 
         elif event == "-THREAD DONE-":
-            window["out"].update(" -------- Launching Main Application -------- ")
             time.sleep(1)
             window.close()
-            run(["python", f"{basepath}/src/views/LaunchGui.py"])
+            run(["python", f"{basepath}/src/views/FileBrowserGui.py"])
 
         elif event == "Start":
             window["out"].update(" -------- Launching Main Application -------- ")
-            time.sleep(2)
+            time.sleep(1)
             window.close()
             run(["python", f"{basepath}/src/views/FileBrowserGui.py"])
 

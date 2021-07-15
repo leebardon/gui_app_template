@@ -7,9 +7,8 @@ from src.controllers import DataController as dc
 from src.views import ProgressGui as pg
 
 
-def launch_gui():
-
-    sg.theme("BrightColors")
+def file_browser_gui():
+    sg.theme("DefaultNoMoreNagging")
     layout = [
         [sg.T("")],
         [sg.Text("Qlikview Excel File: "), sg.Input(), sg.FileBrowse(key="-IN-")],
@@ -30,4 +29,4 @@ def launch_gui():
 
 
 if __name__ == "__main__":
-    launch_gui()
+    file_browser_gui()

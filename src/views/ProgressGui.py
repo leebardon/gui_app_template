@@ -20,10 +20,12 @@ def progress_gui(data, task_type, window_message):
     if task_type == "analysis":
         print("\n >> Click 'START' to analyse data  ")
         analysis_event_loop(window, data)
+        window.close()
 
     elif task_type == "results":
         print("\n >> Click 'START' to generate results  ")
         results_event_loop(window, data)
+        window.close()
 
 
 def analysis_event_loop(window, datapath):
@@ -32,17 +34,14 @@ def analysis_event_loop(window, datapath):
 
         if event == sg.WIN_CLOSED:
             window.close()
-            sys.exit(0)
+            # sys.exit(0)
             break
         elif event == "Start":
             gui.analysis_tasks(window, datapath)
             gui.run_progressbar(window)
         elif event == "-THREAD DONE-":
-            window["out"].update(" ------------- Analysis Complete ------------- ")
             time.sleep(2)
             print(" \n\n >> Generating Results ..... ")
-            time.sleep(2)
-            window.close()
             run(["python", f"{basepath}/src/controllers/ResultsController.py"])
 
 
@@ -51,6 +50,7 @@ def results_event_loop(window, course_data):
         event, values = window.read()
 
         if event == sg.WIN_CLOSED:
+            window.close()
             break
         elif event == "Start":
             gui.results_tasks(window, course_data)
