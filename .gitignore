@@ -1,6 +1,11 @@
 #Large Files
-/data/*.xlsx
-/data/*.csv
+/data/interim_data/*.xlsx
+/data/interim_data/*.csv
+/data/processed_data/*.csv
+/results/*.pkl
+/data/images/*.gif
+/data/processed_data/all/*.csv
+/data/processed_data/by_faculty/*.pkl
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
