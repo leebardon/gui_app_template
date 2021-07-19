@@ -27,6 +27,7 @@ class StringConverter(dict):
 
 def excel_to_csv(datapath):
     csv = f"{_v.BASEPATH}/data/interim_data/raw-incomplete-courses-{_v.TODAY}.csv"
+
     if not os.path.exists(csv):
         Xlsx2csv(datapath, outputencoding="utf-8").convert(csv)
     return csv
