@@ -9,7 +9,6 @@ from qt_material import apply_stylesheet
 class MainWindow(QWidget):
     def __init__(self, file_name):
         super().__init__()
-        self.file_name = file_name
         self.window_width, self.window_height = 600, 500
         self.setMinimumSize(self.window_width, self.window_height)
         self.setWindowTitle("Widget")
