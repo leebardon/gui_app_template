@@ -1,5 +1,5 @@
-from distutils.core import setup
 from setuptools import find_packages
+from distutils.core import setup
 
 setup(name='Health-and-Safety',
       version='1.0',

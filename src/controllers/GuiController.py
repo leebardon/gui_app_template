@@ -5,15 +5,15 @@ from PySide2.QtWidgets import *
 from qt_material import apply_stylesheet
 
 from src.controllers import AnalysisController
-# from src.models import ParseData, GenerateResults, Save
 from src.views.ui_splash import Ui_SplashScreen
 from src.views.ui_start import Ui_Start
 
 
 class SplashScreen(QMainWindow):
-    """[summary]
+    """Initialises a pyqt5 window. Loads views/ui_setup.py params for elements and style
+        Generates cosmetic progressbar and counter, instantiates Start() object
     Args:
-        QMainWindow ([type]): [description]
+        QMainWindow (class): Inherits from QMainWindow base class (PyQt5)
     """
     def __init__(self):
         QMainWindow.__init__(self)
@@ -43,13 +43,18 @@ class SplashScreen(QMainWindow):
 
 
 class Start(QMainWindow):
+    """ Instantiates Start screen, loads elements and style from views/ui_start.py
+        Binds actions to Start button and Select button
+        Launches FileBrowser Dialog to collect paths to Qlikview spreadsheets 
+        Instantiates Analysis() object and threading functionality 
+    Args:
+        QMainWindow (class): Inherits from QMainWindow base class (PyQt5)
+    """
     def __init__(self):
         # super().__init__()
         QMainWindow.__init__(self)
-
         self.ui = Ui_Start()
         self.ui.setupUi(self)
-
         self.ui.progress.hide()
         self.ui.start_button.hide()
 
@@ -85,7 +90,6 @@ class Start(QMainWindow):
         self.analysis.start()
 
 
-
     def analysis_complete(self):
        self.end_program()
 
@@ -102,8 +106,9 @@ class Start(QMainWindow):
 # NOTE Need to handle error if wrong file type seleted, or if no file is selected 
 # At present, you can press start even if you cancel out of file browser, and program exits
 class Analysis(QThread):
-    """
-    Runs a counter thread for processing calculations
+    """Instantiates counter thread for processing calculations
+    Args:
+        QThread (class): Base class from PyQt5 for emit and collect signal passing
     """
     completed = pyqtSignal()
 
@@ -116,6 +121,7 @@ class Analysis(QThread):
         while self.running:
             print("starting analysis")
             AnalysisController.main(TRAINING_RECORDS_PATH, NOT_COMPLETED_PATH)
+            print("finished analysis")
             break
 
         self.completed.emit()
@@ -128,6 +134,12 @@ class Analysis(QThread):
         
 
 class FileBrowser(QDialog):
+    """ Opens file browser dialog for selecting qlikview excel spreadsheets
+        Requires input excel files to be in .xlsx format 
+        Requires input excel files to contain substrings "record" and "complete"
+    Args:
+        QDialog (class): Base class from PyQt5
+    """
     def __init__(self):
         super().__init__() 
         self.setFixedSize(600, 500)
@@ -158,8 +170,6 @@ class FileBrowser(QDialog):
         self.close()
 
     
-
-
 
 
 
