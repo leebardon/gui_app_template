@@ -110,56 +110,5 @@ class Ui_SplashScreen(object):
         self.label_description.setText(QCoreApplication.translate("SplashScreen", u" = Health & Safety =", None))
         self.label_loading.setText(QCoreApplication.translate("SplashScreen", u"loading...", None))
 
-        # if SplashScreen.objectName():
-        #     SplashScreen.setObjectName(u"SplashScreen")
 
-        # # SplashScreen.resize(680, 400)
-        # layout = QVBoxLayout()
-        # # self.setLayout(layout)
-        # # self.frame = QFrame()
-        # # layout.addWidget(self.frame)
-        # SplashScreen.setFixedSize(600, 500)
-        # # self.setWindowTitle("Health & Safety")
-        # # self.setFixedSize(600, 500)
-        # SplashScreen.setWindowFlag(Qt.FramelessWindowHint)
-        # SplashScreen.setAttribute(Qt.WA_TranslucentBackground)
-        # self.counter = 0
-        # self.counter_max = 200
-
-        # self.labelTitle = QLabel()
-        # self.labelTitle.setObjectName(u'labelTitle')
-        # self.labelTitle.resize(400, 160)
-        # self.labelTitle.move(80, 40)
-        # self.labelTitle.setText("Course Helper")
-        # self.labelTitle.setAlignment(Qt.AlignCenter)
-        # self.labelTitle.setFont(QFont('Segoe UI', 28, QFont.Bold))
-
-        # self.labelSubTitle = QLabel()
-        # self.labelSubTitle.setObjectName(u'labelSubTitle')
-        # self.labelSubTitle.resize(400, 160)
-        # self.labelSubTitle.move(80, 95)
-        # self.labelSubTitle.setText("== Health & Safety ==")
-        # self.labelSubTitle.setAlignment(Qt.AlignCenter)
-        # self.labelSubTitle.setFont(QFont('Segoe UI', 12))
-
-        # self.progressBar = QProgressBar()
-        # self.progressBar.setObjectName(u'progressBar')
-        # self.progressBar.resize(600 - 205, 45)
-        # # self.progressBar.resize(self.width() - 205, 45)
-        # self.progressBar.move(90, self.labelTitle.y() + 250)
-        # self.progressBar.setAlignment(Qt.AlignCenter)
-        # self.progressBar.setFormat('%p%')
-        # self.progressBar.setTextVisible(True)
-        # self.progressBar.setRange(0, self.counter_max)
-        # self.progressBar.setValue(20)
-
-        # self.labelLoading = QLabel()
-        # # self.labelLoading.resize(self.width() - 10, 50)
-        # self.labelLoading.resize(600 - 10, 50)
-        # self.labelLoading.move(-5, self.progressBar.y() + 70)
-        # self.labelLoading.setObjectName(u'labelLoading')
-        # self.labelLoading.setAlignment(Qt.AlignCenter)
-        # self.labelLoading.setText('loading...')
-        # self.labelLoading.setFont(QFont('Segoe UI', 12))
-
-        # QMetaObject.connectSlotsByName()
+  

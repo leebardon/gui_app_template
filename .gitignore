@@ -6,6 +6,7 @@
 /data/images/*.gif
 /data/processed_data/all/*.csv
 /data/processed_data/by_faculty/*.pkl
+/data/raw_data/*xls
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

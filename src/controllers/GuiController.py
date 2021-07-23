@@ -5,11 +5,16 @@ from PySide2.QtWidgets import *
 from qt_material import apply_stylesheet
 
 from src.controllers import AnalysisController
-from src.models import ParseData, GenerateResults, Save
+# from src.models import ParseData, GenerateResults, Save
 from src.views.ui_splash import Ui_SplashScreen
+from src.views.ui_start import Ui_Start
 
 
 class SplashScreen(QMainWindow):
+    """[summary]
+    Args:
+        QMainWindow ([type]): [description]
+    """
     def __init__(self):
         QMainWindow.__init__(self)
 
@@ -37,75 +42,65 @@ class SplashScreen(QMainWindow):
 
 
 
-class Start(QWidget):
+class Start(QMainWindow):
     def __init__(self):
-        super().__init__()
-        self.setWindowTitle("Health & Safety")
-        self.setFixedSize(600, 500)
-        self.progress = QProgressBar(self)
-        self.progress.setGeometry(30, 40, 500, 75)
-        self.progress.setMinimum(0)
-        self.progress.setMaximum(0)
-        self.select_button = QPushButton("Select Spreadsheet")
+        # super().__init__()
+        QMainWindow.__init__(self)
 
-        self.layout = QVBoxLayout()
-        self.setLayout(self.layout)
-        self.layout.addWidget(self.progress)
-        self.layout.addWidget(self.select_button)
-        self.progress.hide()
+        self.ui = Ui_Start()
+        self.ui.setupUi(self)
+
+        self.ui.progress.hide()
+        self.ui.start_button.hide()
 
         # bind filebrowser dialog window to button click
-        self.select_button.clicked.connect(self.launch_browser)
+        self.ui.select_button.clicked.connect(self.launch_browser)
+        self.ui.start_button.clicked.connect(self.begin_analysis) 
 
 
     def launch_browser(self):
         FileBrowser()
-        self.select_button.hide()
-
-        # bind controls to events
-        self.start_button = QPushButton("Start")
-        self.layout.addWidget(self.start_button)
-        self.start_button.clicked.connect(self.begin_analysis)   
+        self.ui.select_button.hide()
+        self.ui.instruction.hide()
+        self.ui.start_button.show()
+        self.ui.message.move(85, 150)
+        self.ui.message.setText(u"<strong> Click to Proceed </strong>")
 
 
     def begin_analysis(self):
-        self.start_button.hide()
-        self.progress.show()
+        self.ui.start_button.hide()
+        self.ui.progress.show()
+        self.ui.message.setText(u"- program running -")
 
         # set up thread for analysis
         self.analysis = Analysis()
         self.simulThread = QThread()
-
         self.analysis.moveToThread(self.simulThread)
+
+        # bind controls to events
         self.analysis.started.connect(self.analysis.run)
         self.analysis.finished.connect(self.analysis_complete)
-
         self.analysis.completed.connect(self.analysis.stop)
+
         self.analysis.start()
 
 
+
     def analysis_complete(self):
-        print('Im done :D')
-        self.progress.hide()
+       self.end_program()
+
+
+    def end_program(self):
+        self.ui.progress.hide()
+        self.ui.message.setText("<== Completed ==>")
+        time.sleep(2)
+        self.ui.message.setText("exiting...")
+        time.sleep(2)
+        sys.exit()
         
 
-    def run_tasks(self):
-        time.sleep(3)
-        breakpoint()
-        raw_csv = ParseData.excel_to_csv(FILE)
-        raw_dataframe = ParseData.csv_to_df(raw_csv)
-        breakpoint()
-        interim_dataframe = ParseData.remove_dash(raw_dataframe)
-        ParseData.df_to_csv(interim_dataframe)
-        incomplete_all = GenerateResults.not_completed(interim_dataframe)
-        active_users = GenerateResults.get_ldap_users_list()
-        not_completed = GenerateResults.remove_inactive(incomplete_all, active_users)
-        faculties = GenerateResults.get_faculties_list(not_completed)
-        faculty_results = GenerateResults.results_by_faculty(faculties, not_completed)
-        Save.save_faculties_dataframes(faculty_results)
-        GenerateResults.results_by_department(faculty_results)
-
-
+# NOTE Need to handle error if wrong file type seleted, or if no file is selected 
+# At present, you can press start even if you cancel out of file browser, and program exits
 class Analysis(QThread):
     """
     Runs a counter thread for processing calculations
@@ -119,44 +114,49 @@ class Analysis(QThread):
 
     def run(self):
         while self.running:
-            print("doing stuff")
-            time.sleep(1)
-            print("doing more stuff")
-            time.sleep(2)
-            print("done")
+            print("starting analysis")
+            AnalysisController.main(TRAINING_RECORDS_PATH, NOT_COMPLETED_PATH)
             break
 
         self.completed.emit()
 
 
     def stop():
-        print('finished stuff')
         self.running = False
+        print('finished')
 
         
 
 class FileBrowser(QDialog):
-
     def __init__(self):
-        super().__init__()
-        # apply_stylesheet(app, theme='light_cyan_500.xml',  invert_secondary=True) 
+        super().__init__() 
         self.setFixedSize(600, 500)
         self.open_filename_dialog()     
         self.show()
 
-    # @pyqtSlot(str)
+    # NOTE spreadsheets must be saved in xlsx format - maybe add to Start screen instructions?
     def open_filename_dialog(self):
         options = QFileDialog.Options()
         options |= QFileDialog.DontUseNativeDialog
-        file_name, _ = QFileDialog.getOpenFileName(self, "Please Select Qlikview Spreadsheet", "","All Files (*);;Excel Files (*.xlsx)", options=options)
+        files, _ = QFileDialog.getOpenFileNames(self, "Please Select Qlikview Spreadsheets", "","All Files (*);;Excel Files (*.xlsx)", options=options)
         
-        if file_name:
-            global FILE
-            FILE = file_name
-            # apply_stylesheet(app, theme='dark_blue.xml') 
-            # return
-            self.close()
-            # time.sleep(3)
+        # NOTE error handling not robust, needs attention
+        global TRAINING_RECORDS_PATH, NOT_COMPLETED_PATH
+        if len(files) == 2:
+
+            for i in range(len(files)):
+
+                if "record" in files[i].lower():
+                    TRAINING_RECORDS_PATH = files[i]
+
+                elif "complete" in files[i].lower():
+                    NOT_COMPLETED_PATH = files[i]
+        
+        else:
+            print("Wrong number of files selected: 2 required to proceed.")   
+
+        self.close()
+
     
 
 
@@ -164,19 +164,14 @@ class FileBrowser(QDialog):
 
 
 if __name__ == '__main__':
-    # QApplication.setAttribute(Qt.HighDpiScaleFactorRoundingPolicy.PassThrough)
+
     try: 
-        # extra = open(f"{stylesheets}/launch.css").read()
         app = QApplication(sys.argv)
-        apply_stylesheet(app, theme='dark_blue.xml') 
-        # stylesheet = app.styleSheet()
-
-        # with open(f"{stylesheets}/launch.css") as file:
-        #     app.setStyleSheet(stylesheet + file.read())
-
+        apply_stylesheet(app, theme='dark_purple.xml') 
         window = SplashScreen()
         window.show()
         sys.exit(app.exec_())
 
     except SystemExit:
-        print('Closing Window...')
+
+        print('Closing Application...')

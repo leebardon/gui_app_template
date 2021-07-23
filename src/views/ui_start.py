@@ -15,7 +15,7 @@ class Ui_Start(object):
     def setupUi(self, Start):
 
         if Start.objectName():
-            Start.setObjectName(u"Start.")
+            Start.setObjectName(u"Start")
         Start.resize(600, 500)
 
         self.centralwidget = QWidget(Start)
@@ -36,35 +36,36 @@ class Ui_Start(object):
         self.dropShadowFrame.setFrameShape(QFrame.StyledPanel)
         self.dropShadowFrame.setFrameShadow(QFrame.Raised)
 
-        # Main title settings
-        self.label_title = QLabel(self.dropShadowFrame)
-        self.label_title.setObjectName(u"label_title")
-        self.label_title.resize(430, 200)
-        self.label_title.move(75, 40)
+        self.message = QLabel(self.dropShadowFrame)
+        self.message.setObjectName(u"message")
+        # self.message.resize(430, 200)
+        self.message.move(85, 40)
         font = QFont()
         font.setFamily(u"Segoe UI")
-        font.setPointSize(30)
-        self.label_title.setFont(font)
-        self.label_title.setStyleSheet(u"color: rgb(254, 121, 199);")
-        self.label_title.setAlignment(Qt.AlignCenter)
+        font.setPointSize(20)
+        self.message.setFont(font)
+        self.message.setStyleSheet(u"color: rgb(230, 251, 255);")
+        self.message.setAlignment(Qt.AlignCenter)
 
-        self.label_description = QLabel(self.dropShadowFrame)
-        self.label_description.setObjectName(u"label_description")
-        self.label_description.setGeometry(QRect(0, 150, 661, 31))
-        self.label_description.move(-55, 180)
-        font1 = QFont()
-        font1.setFamily(u"Segoe UI")
-        font1.setPointSize(14)
-        self.label_description.setFont(font1)
-        self.label_description.setStyleSheet(u"color: rgb(98, 114, 164);")
-        self.label_description.setAlignment(Qt.AlignCenter)
+        # Main title settings
+        self.instruction = QLabel(self.dropShadowFrame)
+        self.instruction.setObjectName(u"instruction")
+        self.instruction.resize(430, 240)
+        self.instruction.move(75, 90)
+        font = QFont()
+        font.setFamily(u"Segoe UI")
+        font.setPointSize(11)
+        self.instruction.setFont(font)
+        self.instruction.setStyleSheet(u"color: rgb(230, 251, 255);")
+        self.instruction.setAlignment(Qt.AlignCenter)
 
-        self.progressBar = QProgressBar(self.dropShadowFrame)
-        self.progressBar.setObjectName(u"progressBar")
-        self.progressBar.setGeometry(QRect(50, 280, 561, 23))
-        self.progressBar.resize(600 - 180, 35)
-        self.progressBar.move(80, 320)
-        self.progressBar.setStyleSheet(u"QProgressBar {\n"
+
+        self.progress = QProgressBar(self.dropShadowFrame)
+        self.progress.setObjectName(u"progress")
+        self.progress.setGeometry(QRect(50, 280, 561, 23))
+        self.progress.resize(600 - 180, 35)
+        self.progress.move(80, 320)
+        self.progress.setStyleSheet(u"QprogressBar {\n"
         "	\n"
         "	background-color: rgb(98, 114, 164);\n"
         "	color: rgb(200, 200, 200);\n"
@@ -76,34 +77,51 @@ class Ui_Start(object):
         "	border-radius: 10px;\n"
         "	background-color: qlineargradient(spread:pad, x1:0, y1:0.511364, x2:1, y2:0.523, stop:0 rgba(254, 121, 199, 255), stop:1 rgba(170, 85, 255, 255));\n"
         "}")
-        self.progressBar.setValue(24)
+        self.progress.setValue(24)
+        self.progress.setMinimum(0)
+        self.progress.setMaximum(0)
 
-        self.label_loading = QLabel(self.dropShadowFrame)
-        self.label_loading.setObjectName(u"label_loading")
-        self.label_loading.setGeometry(QRect(0, 320, 661, 31))
-        self.label_loading.move(60, 380)
-        font2 = QFont()
-        font2.setFamily(u"Segoe UI")
-        font2.setPointSize(12)
+        self.select_button = QPushButton(self.dropShadowFrame)
+        self.select_button.setObjectName(u"select_button")
+        self.select_button.resize(200, 100)
+        self.select_button.move(190, 310)
+        self.select_button.setStyleSheet(u"QPushButton {\n"
+        "	\n"
+        # "	background-color: rgb(98, 114, 164);\n"
+        "	color: rgb(255, 255, 255);\n"
+        "	border-style: solid;\n"
+        "	border-radius: 18px;\n"
+        "	text-align: center;\n"
+        "}")
 
-        self.label_loading.setFont(font2)
-        self.label_loading.setStyleSheet(u"color: rgb(98, 114, 164);")
-        self.label_loading.setAlignment(Qt.AlignCenter)
+        self.start_button = QPushButton(self.dropShadowFrame)
+        self.start_button.setObjectName(u"start_button")
+        self.start_button.resize(200, 100)
+        self.start_button.move(190, 310)
+        self.start_button.setStyleSheet(u"QPushButton {\n"
+        "	\n"
+        # "	background-color: rgb(98, 114, 164);\n"
+        "	color: rgb(255, 255, 255);\n"
+        "	border-style: solid;\n"
+        "	border-radius: 18px;\n"
+        "	text-align: center;\n"
+        "}")
 
-        self.counter = 0
-        self.counter_max = 200
 
         self.verticalLayout.addWidget(self.dropShadowFrame)
 
-        SplashScreen.setCentralWidget(self.centralwidget)
+        Start.setCentralWidget(self.centralwidget)
 
-        self.retranslateUi(SplashScreen)
+        self.retranslateUi(Start)
 
-        QMetaObject.connectSlotsByName(SplashScreen)
+        QMetaObject.connectSlotsByName(Start)
 
 
-    def retranslateUi(self, SplashScreen):
-        SplashScreen.setWindowTitle(QCoreApplication.translate("SplashScreen", u"MainWindow", None))
-        self.label_title.setText(QCoreApplication.translate("SplashScreen", u"<strong>Course Helper</strong>", None))
-        self.label_description.setText(QCoreApplication.translate("SplashScreen", u" = Health & Safety =", None))
-        self.label_loading.setText(QCoreApplication.translate("SplashScreen", u"loading...", None))
+    def retranslateUi(self, Start):
+        Start.setWindowTitle(QCoreApplication.translate("Start", u"MainWindow", None))
+        Start.setWindowFlag(Qt.FramelessWindowHint)
+        Start.setAttribute(Qt.WA_TranslucentBackground)
+        self.message.setText(QCoreApplication.translate("Start", u"<strong>Select Spreadsheets</strong>", None))
+        self.instruction.setText(QCoreApplication.translate("Start", u"= Student Training Records =\n  \n= Not Completed =  \n\n\n [Hold ctrl & click to add both]" , None))
+        self.select_button.setText(QCoreApplication.translate("Start", u"Select .xlsx Files", None))
+        self.start_button.setText(QCoreApplication.translate("Start", u"Start", None))

@@ -23,15 +23,6 @@ def not_completed(course_data):
     return course_data[course_data["Completed"] == "N"]
 
 
-def get_ldap_users_list():
-    users = glob(os.path.join(f"{_v.LDAP}/", "*.out"))[0]
-    return pd.read_csv(users, names=["Username"])
-
-
-def remove_inactive(incomplete_all, active_users):
-    return incomplete_all[incomplete_all["Username"].isin(active_users["Username"])]
-
-
 def get_faculties_list(not_completed):
     return not_completed["Faculty Name"].unique()
 
@@ -41,27 +32,52 @@ def results_by_faculty(facs, not_completed):
     for f in facs:
         _filter = not_completed["Faculty Name"] == f
         results[f] = not_completed[_filter]
+
     return results
 
 
-def results_by_department(results_by_faculty):
-    for fac_name, fac_df in results_by_faculty.items():
-        deps_per_fac = results_by_faculty[fac_name]["Department Name"].unique()
-        get_final_results(fac_name, fac_df, deps_per_fac)
+def process_outputs(results_by_faculty, spreadsheet_name):
+    for faculty_name, faculty_df in results_by_faculty.items():
+        deps_in_faculty = results_by_faculty[faculty_name]["Department Name"].unique()
+        results_dict = get_final_results(faculty_name, faculty_df, deps_in_faculty)
+        generate_csv_files(faculty_name, results_dict, spreadsheet_name)
+
+        if spreadsheet_name == "-TRAINING-RECORD-":
+            dse_over_40 = get_DSE_over_40(results_dict)
+            generate_csv_files(faculty_name, dse_over_40, "-DSE-GREATER-THAN-40%-")
 
 
-def get_final_results(faculty, fac_df, deps_per_fac):
+
+def get_DSE_over_40(results_dict):
+    dse_over_40 = {}
+
+    for department, dataframe in results_dict.items():
+        new_cols = ["Last Name", "First Name", "ID", "User Type", "Faculty Name", "Department Name", "Display Screen Equipment -  User Self Assessment"]
+        new_df = dataframe[new_cols]
+
+        dse = ["Display Screen Equipment -  User Self Assessment"]
+        new_df[dse] = new_df[dse].apply(pd.to_numeric, errors='coerce')
+        over_40_df = new_df[new_df[dse].values >= 40]
+
+        dse_over_40[department] = over_40_df
+
+    return dse_over_40
+
+
+def get_final_results(faculty, fac_df, deps_in_faculty):
     results = {}
-    for d in deps_per_fac:
-        _filter = fac_df["Department Name"] == d
-        results[d] = fac_df[_filter]
-    generate_outputs(faculty, results)
+    for dep in deps_in_faculty:
+        _filter = fac_df["Department Name"] == dep
+        results[dep] = fac_df[_filter] 
+
+    return results
 
 
-def generate_outputs(faculty_name, results_dict):
+
+def generate_csv_files(faculty_name, results_dict, spreadsheet_name):
     fac_path = Save.check_facultyfolder_exists(faculty_name)
 
     for department, dataframe in results_dict.items():
         dep_path = Save.check_dir(f"{fac_path}/{department}")
-        filepath = f"{dep_path}/{_v.TODAY}.xlsx"
+        filepath = f"{dep_path}/{department}{spreadsheet_name}{_v.TODAY}.xlsx"
         Save.save_to_excel(dataframe, filepath)
