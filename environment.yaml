@@ -1,0 +1,11 @@
+name: gui-template
+dependencies:
+  - python=3.9  # or 2.7 if you are feeling nostalgic
+  - bokeh
+  - numpy
+  - pandas
+  - h5py
+  - hdf5
+  - qt
+  - qtconsole
+  - qtpy

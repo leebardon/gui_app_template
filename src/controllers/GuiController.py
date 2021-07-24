@@ -1,5 +1,14 @@
 import sys, time, os
-from PyQt5.QtWidgets import QApplication, QWidget, QProgressBar, QVBoxLayout, QFileDialog, QPushButton, QMainWindow, QDialog
+from PyQt5.QtWidgets import (
+    QApplication,
+    QWidget,
+    QProgressBar,
+    QVBoxLayout,
+    QFileDialog,
+    QPushButton,
+    QMainWindow,
+    QDialog,
+)
 from PyQt5.QtCore import QTimer, QThread, pyqtSignal
 from PySide2.QtWidgets import *
 from qt_material import apply_stylesheet
@@ -15,6 +24,7 @@ class SplashScreen(QMainWindow):
     Args:
         QMainWindow (class): Inherits from QMainWindow base class (PyQt5)
     """
+
     def __init__(self):
         QMainWindow.__init__(self)
 
@@ -26,7 +36,6 @@ class SplashScreen(QMainWindow):
         self.timer = QTimer()
         self.timer.timeout.connect(self.loading)
         self.timer.start(30)
-
 
     def loading(self):
         self.ui.progressBar.setValue(self.ui.counter)
@@ -41,15 +50,15 @@ class SplashScreen(QMainWindow):
             self.launch.show()
 
 
-
 class Start(QMainWindow):
-    """ Instantiates Start screen, loads elements and style from views/ui_start.py
+    """Instantiates Start screen, loads elements and style from views/ui_start.py
         Binds actions to Start button and Select button
-        Launches FileBrowser Dialog to collect paths to Qlikview spreadsheets 
-        Instantiates Analysis() object and threading functionality 
+        Launches FileBrowser Dialog to collect paths to Qlikview spreadsheets
+        Instantiates Analysis() object and threading functionality
     Args:
         QMainWindow (class): Inherits from QMainWindow base class (PyQt5)
     """
+
     def __init__(self):
         # super().__init__()
         QMainWindow.__init__(self)
@@ -60,8 +69,7 @@ class Start(QMainWindow):
 
         # bind filebrowser dialog window to button click
         self.ui.select_button.clicked.connect(self.launch_browser)
-        self.ui.start_button.clicked.connect(self.begin_analysis) 
-
+        self.ui.start_button.clicked.connect(self.begin_analysis)
 
     def launch_browser(self):
         FileBrowser()
@@ -70,7 +78,6 @@ class Start(QMainWindow):
         self.ui.start_button.show()
         self.ui.message.move(85, 150)
         self.ui.message.setText(u"<strong> Click to Proceed </strong>")
-
 
     def begin_analysis(self):
         self.ui.start_button.hide()
@@ -89,10 +96,8 @@ class Start(QMainWindow):
 
         self.analysis.start()
 
-
     def analysis_complete(self):
-       self.end_program()
-
+        self.end_program()
 
     def end_program(self):
         self.ui.progress.hide()
@@ -101,21 +106,21 @@ class Start(QMainWindow):
         self.ui.message.setText("exiting...")
         time.sleep(2)
         sys.exit()
-        
 
-# NOTE Need to handle error if wrong file type seleted, or if no file is selected 
+
+# NOTE Need to handle error if wrong file type seleted, or if no file is selected
 # At present, you can press start even if you cancel out of file browser, and program exits
 class Analysis(QThread):
     """Instantiates counter thread for processing calculations
     Args:
         QThread (class): Base class from PyQt5 for emit and collect signal passing
     """
+
     completed = pyqtSignal()
 
     def __init__(self, parent=None):
         super(Analysis, self).__init__(parent)
         self.running = True
-
 
     def run(self):
         while self.running:
@@ -126,32 +131,37 @@ class Analysis(QThread):
 
         self.completed.emit()
 
-
     def stop():
         self.running = False
-        print('finished')
+        print("finished")
 
-        
 
 class FileBrowser(QDialog):
-    """ Opens file browser dialog for selecting qlikview excel spreadsheets
-        Requires input excel files to be in .xlsx format 
+    """Opens file browser dialog for selecting qlikview excel spreadsheets
+        Requires input excel files to be in .xlsx format
         Requires input excel files to contain substrings "record" and "complete"
     Args:
         QDialog (class): Base class from PyQt5
     """
+
     def __init__(self):
-        super().__init__() 
+        super().__init__()
         self.setFixedSize(600, 500)
-        self.open_filename_dialog()     
+        self.open_filename_dialog()
         self.show()
 
     # NOTE spreadsheets must be saved in xlsx format - maybe add to Start screen instructions?
     def open_filename_dialog(self):
         options = QFileDialog.Options()
         options |= QFileDialog.DontUseNativeDialog
-        files, _ = QFileDialog.getOpenFileNames(self, "Please Select Qlikview Spreadsheets", "","All Files (*);;Excel Files (*.xlsx)", options=options)
-        
+        files, _ = QFileDialog.getOpenFileNames(
+            self,
+            "Please Select Qlikview Spreadsheets",
+            "",
+            "All Files (*);;Excel Files (*.xlsx)",
+            options=options,
+        )
+
         # NOTE error handling not robust, needs attention
         global TRAINING_RECORDS_PATH, NOT_COMPLETED_PATH
         if len(files) == 2:
@@ -163,25 +173,22 @@ class FileBrowser(QDialog):
 
                 elif "complete" in files[i].lower():
                     NOT_COMPLETED_PATH = files[i]
-        
+
         else:
-            print("Wrong number of files selected: 2 required to proceed.")   
+            print("Wrong number of files selected: 2 required to proceed.")
 
         self.close()
 
-    
 
+if __name__ == "__main__":
 
-
-if __name__ == '__main__':
-
-    try: 
+    try:
         app = QApplication(sys.argv)
-        apply_stylesheet(app, theme='dark_purple.xml') 
+        apply_stylesheet(app, theme="dark_purple.xml")
         window = SplashScreen()
         window.show()
         sys.exit(app.exec_())
 
     except SystemExit:
 
-        print('Closing Application...')
+        print("Closing Application...")

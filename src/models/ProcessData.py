@@ -26,7 +26,7 @@ class StringConverter(dict):
 
 
 def excel_to_csv(T_RECORDS_PATH, NOT_COMPLETED_PATH):
-    """ Converts excels spreadsheet to csv for improved processing speed
+    """Converts excels spreadsheet to csv for improved processing speed
         Currently proceeds only if conversion has not been done for the current day...
     Args:
         T_RECORDS_PATH (path): To student_training_records.xlsx
@@ -34,8 +34,12 @@ def excel_to_csv(T_RECORDS_PATH, NOT_COMPLETED_PATH):
     Returns:
         [type]: [description]
     """
-    TR_csv_path = f"{_v.BASEPATH}/data/interim_data/interim-training-records-{_v.TODAY}.csv"
-    NC_csv_path = f"{_v.BASEPATH}/data/interim_data/interim-incomplete-courses-{_v.TODAY}.csv"
+    TR_csv_path = (
+        f"{_v.BASEPATH}/data/interim_data/interim-training-records-{_v.TODAY}.csv"
+    )
+    NC_csv_path = (
+        f"{_v.BASEPATH}/data/interim_data/interim-incomplete-courses-{_v.TODAY}.csv"
+    )
 
     for p in [TR_csv_path, NC_csv_path]:
         for data in [T_RECORDS_PATH, NOT_COMPLETED_PATH]:
@@ -45,9 +49,8 @@ def excel_to_csv(T_RECORDS_PATH, NOT_COMPLETED_PATH):
     return TR_csv_path, NC_csv_path
 
 
-
 def csv_to_df(TR_csv, NC_csv):
-    """ Converts csv to pandas dataframe for processing
+    """Converts csv to pandas dataframe for processing
     Args:
         TR_csv (csv file): Training records csv
         NC_csv (csv file): Non complete csv
@@ -59,11 +62,10 @@ def remove_dash(*dfs):
     """ Converts dash to Nonetype to enable further processing """
     out = []
     for df in dfs:
-        df.replace({"-": None}, inplace=True) 
+        df.replace({"-": None}, inplace=True)
         out.append(df)
-    
-    return [df for df in out]
 
+    return [df for df in out]
 
 
 # NOTE not sure if below functions needed anymore
@@ -79,7 +81,7 @@ def remove_dash(*dfs):
 
 
 def df_to_csv(tr_interim, nc_interim):
-    """ Saves processed dataframes as interim csv files 
+    """Saves processed dataframes as interim csv files
     Args:
         tr_interim (pandas dataframe): Training records df
         nc_interim (pandas dataframe): Training records df
@@ -90,5 +92,3 @@ def df_to_csv(tr_interim, nc_interim):
     nc_interim.to_csv(
         f"{_v.BASEPATH}/data/processed_data/all/incomplete-courses-{_v.TODAY}.csv"
     )
-
-

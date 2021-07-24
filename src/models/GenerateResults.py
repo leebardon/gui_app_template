@@ -40,11 +40,11 @@ def results_by_faculty(facs, not_completed):
 
 
 def process_outputs(results_by_faculty, spreadsheet_name):
-    """ For each faculty, finds all unique departments 
-        Calls get_final_results() 
-        Calls generate_csv_files()
-        If processing Training Records spreadsheet: 
-                calls get_DSE_over_40() to generate 'DSE greater than 40' spreadsheets
+    """For each faculty, finds all unique departments
+    Calls get_final_results()
+    Calls generate_csv_files()
+    If processing Training Records spreadsheet:
+            calls get_DSE_over_40() to generate 'DSE greater than 40' spreadsheets
     """
     for faculty_name, faculty_df in results_by_faculty.items():
         deps_in_faculty = results_by_faculty[faculty_name]["Department Name"].unique()
@@ -56,18 +56,25 @@ def process_outputs(results_by_faculty, spreadsheet_name):
             generate_csv_files(faculty_name, dse_over_40, "-DSE-GREATER-THAN-40%-")
 
 
-
 def get_DSE_over_40(results_dict):
     """ Filters out instances of individuals self assment of DSE being >= 40% """
     dse_over_40 = {}
 
     for department, dataframe in results_dict.items():
-        new_cols = ["Last Name", "First Name", "ID", "User Type", "Faculty Name", "Department Name", "Display Screen Equipment -  User Self Assessment"]
+        new_cols = [
+            "Last Name",
+            "First Name",
+            "ID",
+            "User Type",
+            "Faculty Name",
+            "Department Name",
+            "Display Screen Equipment -  User Self Assessment",
+        ]
         new_df = dataframe[new_cols]
 
         dse = ["Display Screen Equipment -  User Self Assessment"]
-        pd.options.mode.chained_assignment = None 
-        new_df[dse] = new_df[dse].apply(pd.to_numeric, errors='coerce')
+        pd.options.mode.chained_assignment = None
+        new_df[dse] = new_df[dse].apply(pd.to_numeric, errors="coerce")
         over_40_df = new_df[new_df[dse].values >= 40]
 
         dse_over_40[department] = over_40_df
@@ -80,10 +87,9 @@ def get_final_results(faculty, fac_df, deps_in_faculty):
     results = {}
     for dep in deps_in_faculty:
         _filter = fac_df["Department Name"] == dep
-        results[dep] = fac_df[_filter] 
+        results[dep] = fac_df[_filter]
 
     return results
-
 
 
 def generate_csv_files(faculty_name, results_dict, spreadsheet_name):

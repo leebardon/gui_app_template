@@ -42,7 +42,9 @@ def save_to_excel(df, filepath):
     excel_writer = StyleFrame.ExcelWriter(filepath)
     sf = StyleFrame(df)
     sf.set_column_width(columns, width=17)
-    sf.to_excel(excel_writer=excel_writer,)
+    sf.to_excel(
+        excel_writer=excel_writer,
+    )
     excel_writer.save()
 
 
