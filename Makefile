@@ -6,4 +6,4 @@ clean:
 	 
 
 lint:
-	@black src tests runscript.py
+	@black src runscript.py

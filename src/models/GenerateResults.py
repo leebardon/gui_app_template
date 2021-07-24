@@ -16,7 +16,6 @@ _v = Vars()
 _v.TODAY = str(date.today())
 _v.BASEPATH = Path.cwd()
 _v.OUTDIR = os.path.dirname(_v.BASEPATH)
-_v.LDAP = f"{_v.OUTDIR}/H&S Incomplete Courses/.ldap_users"
 
 
 # def not_completed(course_data):
